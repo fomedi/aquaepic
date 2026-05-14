@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SRS Expert Screening Ballot — AquaEPIC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,600;1,8..60,400&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── DESIGN TOKENS ── */
+:root {
+  --navy:    #041E42;
+  --navy2:   #0A2D62;
+  --royal:   #003580;
+  --sky:     #4A90C4;
+  --pale:    #D6E4F0;
+  --paler:   #EEF5FB;
+  --offwhite:#F8F9FA;
+  --text:    #1A1A2E;
+  --muted:   #5A6A7E;
+  --white:   #FFFFFF;
+  --gold:    #C8963E;
+  --gold2:   #E8B45A;
+  --green:   #1E6B45;
+  --green-bg:#E8F5EE;
+  --red:     #8B2020;
+  --red-bg:  #FDEAEA;
+  --border:  rgba(4,30,66,0.12);
+  --shadow:  0 2px 12px rgba(4,30,66,0.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Source Sans 3',sans-serif;color:var(--text);background:var(--offwhite);font-size:15px;line-height:1.6}
+
+/* ── LAYOUT ── */
+.page { display:none }
+.page.active { display:block }
+
+/* ── NAV ── */
+.topbar{background:var(--navy);color:var(--white);padding:0 2rem;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:3px solid var(--gold)}
+.topbar-brand{font-family:'Source Serif 4',serif;font-size:1rem;font-weight:600;color:var(--white);letter-spacing:0.01em}
+.topbar-brand span{color:var(--gold2);font-weight:300;font-style:italic}
+.topbar-right{display:flex;align-items:center;gap:1.5rem}
+.token-badge{font-size:11.5px;color:rgba(255,255,255,0.55);letter-spacing:0.04em}
+.token-badge strong{color:var(--gold2)}
+.progress-wrap{display:flex;align-items:center;gap:10px}
+.progress-track{width:160px;height:5px;background:rgba(255,255,255,0.15);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:var(--gold);border-radius:3px;transition:width 0.4s}
+.progress-label{font-size:11.5px;color:rgba(255,255,255,0.65);min-width:70px;text-align:right}
+
+/* ── WELCOME SCREEN ── */
+#page-welcome{min-height:calc(100vh - 56px);display:flex;align-items:center;justify-content:center;padding:3rem 1.5rem}
+.welcome-card{background:var(--white);border:1px solid var(--border);border-radius:12px;max-width:620px;width:100%;padding:3rem 3.5rem;box-shadow:var(--shadow)}
+.welcome-kicker{font-size:11px;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--sky);margin-bottom:0.8rem}
+.welcome-card h1{font-family:'Source Serif 4',serif;font-size:1.9rem;font-weight:600;color:var(--navy);line-height:1.2;margin-bottom:1rem}
+.welcome-card h1 em{font-style:italic;color:var(--sky)}
+.welcome-card p{color:var(--muted);line-height:1.8;margin-bottom:1rem;font-size:14.5px}
+.welcome-card p strong{color:var(--text)}
+.info-row{display:flex;gap:1rem;margin:1.5rem 0;flex-wrap:wrap}
+.info-chip{display:flex;align-items:center;gap:7px;padding:8px 14px;background:var(--paler);border:1px solid var(--pale);border-radius:6px;font-size:13px;color:var(--royal);font-weight:500}
+.form-group{margin-bottom:1.25rem}
+.form-group label{display:block;font-size:13px;font-weight:600;color:var(--navy);margin-bottom:6px;letter-spacing:0.02em}
+.form-group select,.form-group input{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:'Source Sans 3',sans-serif;color:var(--text);background:var(--white);transition:border-color 0.2s}
+.form-group select:focus,.form-group input:focus{outline:none;border-color:var(--sky)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.consent-box{background:var(--paler);border:1px solid var(--pale);border-radius:6px;padding:1rem 1.2rem;margin-bottom:1.5rem;font-size:13px;color:var(--muted);line-height:1.7}
+.consent-box label{display:flex;gap:10px;align-items:flex-start;cursor:pointer;color:var(--text);font-size:13.5px}
+.consent-box input[type=checkbox]{margin-top:3px;accent-color:var(--navy);flex-shrink:0;width:16px;height:16px}
+.btn-start{width:100%;padding:14px;background:var(--navy);color:var(--white);border:none;border-radius:6px;font-size:15px;font-weight:600;font-family:'Source Sans 3',sans-serif;cursor:pointer;transition:background 0.2s;letter-spacing:0.03em}
+.btn-start:hover{background:var(--royal)}
+.btn-start:disabled{background:var(--muted);cursor:not-allowed}
+.err-msg{color:var(--red);font-size:13px;margin-top:8px;display:none}
+
+/* ── INVALID TOKEN ── */
+#page-invalid{min-height:calc(100vh - 56px);display:flex;align-items:center;justify-content:center;padding:2rem}
+.invalid-card{background:var(--white);border:1px solid var(--border);border-radius:12px;max-width:480px;width:100%;padding:2.5rem 3rem;text-align:center;box-shadow:var(--shadow)}
+.invalid-card h2{font-family:'Source Serif 4',serif;font-size:1.5rem;color:var(--navy);margin-bottom:1rem}
+.invalid-card p{color:var(--muted);font-size:14px;line-height:1.7}
+
+/* ── BALLOT SCREEN ── */
+#page-ballot{padding-bottom:6rem}
+.ballot-toolbar{background:var(--white);border-bottom:1px solid var(--border);padding:0.9rem 2rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap;position:sticky;top:56px;z-index:90}
+.toolbar-search{flex:1;min-width:180px;padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:13.5px;font-family:'Source Sans 3',sans-serif;color:var(--text)}
+.toolbar-search:focus{outline:none;border-color:var(--sky)}
+.toolbar-select{padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:'Source Sans 3',sans-serif;color:var(--text);background:var(--white);cursor:pointer}
+.toolbar-select:focus{outline:none;border-color:var(--sky)}
+.filter-pill{padding:6px 13px;border:1px solid var(--border);border-radius:20px;font-size:12.5px;font-family:'Source Sans 3',sans-serif;color:var(--muted);background:var(--white);cursor:pointer;transition:all 0.15s}
+.filter-pill.on{background:var(--navy);color:var(--white);border-color:var(--navy)}
+.vote-summary{margin-left:auto;display:flex;gap:1rem;align-items:center;font-size:13px;white-space:nowrap}
+.vs-keep{color:var(--green);font-weight:600}
+.vs-remove{color:var(--red);font-weight:600}
+.vs-unvoted{color:var(--muted)}
+
+.ballot-body{max-width:1100px;margin:0 auto;padding:1.5rem 2rem}
+.section-block{margin-bottom:2.5rem}
+.section-heading{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:2px solid var(--navy);margin-bottom:0;position:sticky;top:108px;background:var(--offwhite);z-index:80}
+.section-heading h2{font-family:'Source Serif 4',serif;font-size:1.05rem;font-weight:600;color:var(--navy)}
+.section-count{font-size:12px;color:var(--muted);margin-left:auto}
+
+/* ── MEASURE ROW ── */
+.measure-row{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:1rem 1.2rem;margin-top:8px;transition:box-shadow 0.15s}
+.measure-row:hover{box-shadow:0 2px 10px rgba(4,30,66,0.07)}
+.measure-row.voted-keep{border-left:4px solid var(--green)}
+.measure-row.voted-remove{border-left:4px solid var(--red);opacity:0.75}
+.mr-top{display:flex;align-items:flex-start;gap:12px}
+.mr-code{font-size:11.5px;font-weight:600;font-family:'Source Sans 3',sans-serif;color:var(--muted);min-width:40px;padding-top:2px;letter-spacing:0.04em}
+.mr-text{flex:1;font-size:14.5px;color:var(--text);line-height:1.5}
+.mr-tags{display:flex;gap:6px;align-items:center;flex-shrink:0}
+.apdr-tag{font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:3px;letter-spacing:0.05em}
+.apdr-A{background:#E8F5EE;color:#1E6B45}
+.apdr-P{background:var(--paler);color:var(--royal)}
+.apdr-D{background:#FDF3E3;color:#7A5012}
+.apdr-R{background:var(--red-bg);color:var(--red)}
+.mr-actions{display:flex;gap:8px;margin-top:10px;margin-left:52px}
+.vote-btn{padding:7px 18px;border-radius:5px;font-size:13px;font-weight:600;font-family:'Source Sans 3',sans-serif;cursor:pointer;border:1.5px solid;transition:all 0.15s;letter-spacing:0.02em}
+.vote-btn.keep{border-color:rgba(30,107,69,0.35);color:var(--green);background:var(--white)}
+.vote-btn.keep:hover,.vote-btn.keep.active{background:var(--green);color:var(--white);border-color:var(--green)}
+.vote-btn.remove{border-color:rgba(139,32,32,0.35);color:var(--red);background:var(--white)}
+.vote-btn.remove:hover,.vote-btn.remove.active{background:var(--red);color:var(--white);border-color:var(--red)}
+.comment-toggle{margin-left:8px;padding:7px 14px;border-radius:5px;font-size:12.5px;font-family:'Source Sans 3',sans-serif;cursor:pointer;border:1px solid var(--border);color:var(--muted);background:var(--white);transition:all 0.15s}
+.comment-toggle:hover{border-color:var(--sky);color:var(--sky)}
+.comment-toggle.has-comment{border-color:var(--gold);color:var(--gold)}
+.comment-area{margin-top:10px;margin-left:52px;display:none}
+.comment-area.open{display:block}
+.comment-area textarea{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:'Source Sans 3',sans-serif;color:var(--text);resize:vertical;min-height:68px;line-height:1.5}
+.comment-area textarea:focus{outline:none;border-color:var(--sky)}
+.comment-area textarea::placeholder{color:var(--muted)}
+.char-count{font-size:11.5px;color:var(--muted);text-align:right;margin-top:3px}
+.char-count.over{color:var(--red)}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:3rem;color:var(--muted);font-size:14px}
+
+/* ── SUBMIT BAR ── */
+.submit-bar{position:fixed;bottom:0;left:0;right:0;background:var(--navy);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;gap:1.5rem;border-top:3px solid var(--gold);z-index:200}
+.submit-stats{color:rgba(255,255,255,0.7);font-size:13.5px}
+.submit-stats strong{color:var(--white)}
+.submit-stats .s-keep{color:#6FCF97}
+.submit-stats .s-remove{color:#F4A0A0}
+.submit-stats .s-left{color:var(--gold2)}
+.btn-submit{padding:11px 32px;background:var(--gold);color:var(--navy);border:none;border-radius:5px;font-size:14.5px;font-weight:700;font-family:'Source Sans 3',sans-serif;cursor:pointer;letter-spacing:0.03em;transition:all 0.2s}
+.btn-submit:hover{background:var(--gold2);transform:translateY(-1px)}
+.btn-submit:disabled{background:var(--muted);color:rgba(255,255,255,0.5);cursor:not-allowed;transform:none}
+.autosave-note{font-size:11.5px;color:rgba(255,255,255,0.4);white-space:nowrap}
+.autosave-note.saved{color:rgba(111,207,151,0.7)}
+
+/* ── SUBMITTING OVERLAY ── */
+.overlay{position:fixed;inset:0;background:rgba(4,30,66,0.85);z-index:1000;display:none;align-items:center;justify-content:center}
+.overlay.active{display:flex}
+.overlay-card{background:var(--white);border-radius:12px;padding:3rem;text-align:center;max-width:400px;width:90%}
+.spinner{width:40px;height:40px;border:4px solid var(--pale);border-top-color:var(--navy);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 1.5rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.overlay-card h3{font-family:'Source Serif 4',serif;font-size:1.4rem;color:var(--navy);margin-bottom:0.5rem}
+.overlay-card p{color:var(--muted);font-size:14px}
+
+/* ── THANK YOU ── */
+#page-thankyou{min-height:calc(100vh - 56px);display:flex;align-items:center;justify-content:center;padding:2rem}
+.ty-card{background:var(--white);border:1px solid var(--border);border-radius:12px;max-width:540px;width:100%;padding:3rem 3.5rem;text-align:center;box-shadow:var(--shadow)}
+.ty-icon{width:64px;height:64px;border-radius:50%;background:var(--green-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;font-size:28px}
+.ty-card h2{font-family:'Source Serif 4',serif;font-size:1.9rem;color:var(--navy);margin-bottom:1rem}
+.ty-card p{color:var(--muted);font-size:14.5px;line-height:1.8;margin-bottom:1rem}
+.ty-summary{background:var(--paler);border-radius:8px;padding:1.2rem 1.5rem;margin:1.5rem 0;text-align:left}
+.ty-row{display:flex;justify-content:space-between;padding:5px 0;font-size:13.5px;border-bottom:1px solid var(--pale)}
+.ty-row:last-child{border-bottom:none}
+.ty-row .ty-val{font-weight:600;color:var(--navy)}
+.ty-val.green{color:var(--green)}
+.ty-val.red{color:var(--red)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  .welcome-card{padding:2rem 1.5rem}
+  .form-row{grid-template-columns:1fr}
+  .ballot-toolbar{padding:0.75rem 1rem}
+  .ballot-body{padding:1rem}
+  .topbar-right .progress-wrap{display:none}
+  .submit-bar{flex-wrap:wrap;gap:0.75rem}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-brand">AquaEPIC <span>· SRS Screening Ballot</span></div>
+  <div class="topbar-right">
+    <span class="token-badge">Expert: <strong id="tb-token">—</strong></span>
+    <div class="progress-wrap">
+      <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+      <span class="progress-label" id="prog-label">0 / 100</span>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: INVALID TOKEN -->
+<div id="page-invalid" class="page">
+  <div class="invalid-card">
+    <h2>Invalid access link</h2>
+    <p>This ballot link does not contain a valid expert token. Please use the unique link sent to you by the study team.<br><br>
+    If you believe this is an error, contact <strong>fmardone@ed.ac.uk</strong></p>
+  </div>
+</div>
+
+<!-- PAGE: WELCOME / BACKGROUND QUESTIONNAIRE -->
+<div id="page-welcome" class="page">
+  <div class="welcome-card">
+    <p class="welcome-kicker">AquaEPIC Initiative · University of Edinburgh · R(D)SVS</p>
+    <h1>SRS Control Measures <em>Screening Ballot</em></h1>
+    <p>You are invited to help shortlist the most relevant disease control measures for Scottish Atlantic salmon farming. Your votes will determine which of the ~100 candidate measures proceed to the Delphi ranking rounds.</p>
+    <div class="info-row">
+      <span class="info-chip">⏱ ~25–30 min</span>
+      <span class="info-chip">💾 Auto-saved</span>
+      <span class="info-chip">🔒 Responses anonymous</span>
+    </div>
+    <p><strong>Instructions:</strong> For each measure, vote <strong>Keep</strong> if it is relevant and actionable under Scottish production conditions, or <strong>Remove</strong> if it is redundant, not applicable, or indistinct from another measure. An optional comment field is available for each measure.</p>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:1.5rem 0">
+    <p style="font-size:13px;color:var(--muted);margin-bottom:1.2rem"><strong style="color:var(--text)">Before you begin</strong> — please answer two short background questions. These are used only for stratified analysis and are not linked to your identity.</p>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="q-orgtype">Organisation type</label>
+        <select id="q-orgtype">
+          <option value="">— Select —</option>
+          <option value="farming">Farming company (producer)</option>
+          <option value="supplier">Supplier / service provider</option>
+          <option value="diagnostic">Diagnostic / veterinary practice</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="q-years">Years in Scottish salmon health</label>
+        <select id="q-years">
+          <option value="">— Select —</option>
+          <option value="1-5">1–5 years</option>
+          <option value="6-10">6–10 years</option>
+          <option value="11-15">11–15 years</option>
+          <option value="16-20">16–20 years</option>
+          <option value="20+">More than 20 years</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="consent-box">
+      <label>
+        <input type="checkbox" id="q-consent">
+        I confirm I have read the study information sheet, I consent to participate, and I understand my anonymised responses will be used in a peer-reviewed publication.
+      </label>
+    </div>
+
+    <button class="btn-start" id="btn-start" onclick="startBallot()">Begin ballot →</button>
+    <p class="err-msg" id="welcome-err">Please complete all fields and confirm consent before continuing.</p>
+  </div>
+</div>
+
+<!-- PAGE: BALLOT -->
+<div id="page-ballot" class="page">
+  <div class="ballot-toolbar">
+    <input class="toolbar-search" type="search" id="search-box" placeholder="Search measures…" oninput="renderBallot()">
+    <select class="toolbar-select" id="filter-section" onchange="renderBallot()">
+      <option value="">All sections</option>
+    </select>
+    <select class="toolbar-select" id="filter-apdr" onchange="renderBallot()">
+      <option value="">All APDR stages</option>
+      <option value="A">ANTICIPATE</option>
+      <option value="P">PREVENT</option>
+      <option value="D">DETECT</option>
+      <option value="R">RESPOND</option>
+    </select>
+    <button class="filter-pill" id="pill-unvoted" onclick="togglePill('unvoted')">Unvoted only</button>
+    <button class="filter-pill" id="pill-kept" onclick="togglePill('kept')">Kept</button>
+    <button class="filter-pill" id="pill-removed" onclick="togglePill('removed')">Removed</button>
+    <div class="vote-summary">
+      <span class="vs-keep" id="vs-keep">✓ 0</span>
+      <span class="vs-remove" id="vs-remove">✗ 0</span>
+      <span class="vs-unvoted" id="vs-unvoted">○ 100 left</span>
+    </div>
+  </div>
+
+  <div class="ballot-body" id="ballot-body"></div>
+
+  <div class="submit-bar">
+    <div class="submit-stats">
+      <span class="s-keep" id="sb-keep">0 kept</span> &nbsp;·&nbsp;
+      <span class="s-remove" id="sb-remove">0 removed</span> &nbsp;·&nbsp;
+      <span class="s-left" id="sb-left">100 unvoted</span>
+    </div>
+    <span class="autosave-note" id="autosave-note">Progress auto-saved</span>
+    <button class="btn-submit" id="btn-submit" onclick="confirmSubmit()">Submit ballot</button>
+  </div>
+</div>
+
+<!-- PAGE: THANK YOU -->
+<div id="page-thankyou" class="page">
+  <div class="ty-card">
+    <div class="ty-icon">✓</div>
+    <h2>Ballot submitted</h2>
+    <p>Thank you for participating. Your responses have been recorded and will be combined with those of the other panellists to determine the shortlist for Delphi Round 1.</p>
+    <div class="ty-summary" id="ty-summary"></div>
+    <p style="font-size:13px;color:var(--muted)">You will receive an email when Delphi Round 1 opens (target: 16 June 2026). If you have questions, contact <strong style="color:var(--text)">fmardone@ed.ac.uk</strong></p>
+  </div>
+</div>
+
+<!-- SUBMITTING OVERLAY -->
+<div class="overlay" id="overlay">
+  <div class="overlay-card">
+    <div class="spinner"></div>
+    <h3>Submitting…</h3>
+    <p>Sending your responses to the study server. Please don't close this tab.</p>
+  </div>
+</div>
+
+<script>
+// ─── CONFIGURATION ────────────────────────────────────────────────────────────
+// STEP 1: Replace this URL with your Google Apps Script web app URL after deployment
+const SHEET_ENDPOINT = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+
+// ─── VALID TOKENS ─────────────────────────────────────────────────────────────
+// Add one token per expert. Format: 'TOKEN': 'Expert Name'
+// Tokens are case-sensitive. Recommend format: initials + 3-digit number
+const VALID_TOKENS = {
+  'EXP_001': 'Expert 1',
+  'EXP_002': 'Expert 2',
+  'EXP_003': 'Expert 3',
+  'EXP_004': 'Expert 4',
+  'EXP_005': 'Expert 5',
+  'EXP_006': 'Expert 6',
+  'EXP_007': 'Expert 7',
+  'EXP_008': 'Expert 8',
+  'EXP_009': 'Expert 9',
+  'EXP_010': 'Expert 10',
+  'EXP_011': 'Expert 11',
+  'EXP_012': 'Expert 12',
+  // Add real tokens here before deployment — e.g. 'FM_001': 'Fernando M.'
+};
+
+// ─── MEASURE DATA ─────────────────────────────────────────────────────────────
+const MEASURES = [
+  // [code, section, text, apdr]
+  ['M01','General Biosafety','Daily mortality removal','R'],
+  ['M02','General Biosafety','Necropsy and mortality classification','D'],
+  ['M03','General Biosafety','Integrated neighbourhood management','P'],
+  ['M04','General Biosafety','Routine mortality sampling (PCR)','D'],
+  ['M05','General Biosafety','Use of disinfectants (footbath, handbath)','P'],
+  ['M06','General Biosafety','Regular removal of moribund fish during outbreak','R'],
+  ['N01','General Biosafety','Restricted farm access protocols (visitor logs, decontamination)','P'],
+  ['N02','General Biosafety','Equipment disinfection between cages and sites','P'],
+  ['N03','General Biosafety','Dead fish disposal certification and traceability','R'],
+  ['M07','SRS Regulations','Centre categorisation (Surveillance / Alert / High Dissemination)','D'],
+  ['M08','SRS Regulations','PROA programme','R'],
+  ['M09','SRS Regulations','Integrated zone management','A'],
+  ['N04','SRS Regulations','Farm-level SRS action plan aligned with regulatory thresholds','R'],
+  ['N05','SRS Regulations','Mandatory reporting of first SRS detection within 24 h','D'],
+  ['M10','Vaccination','Polyvalent vaccine (P. salmonis bacterin)','P'],
+  ['M11','Vaccination','Live attenuated vaccine','P'],
+  ['M12','Vaccination','Revaccination at sea (± antibiotic therapy)','R'],
+  ['N06','Vaccination','Booster vaccination protocol at sea based on genogroup profiling','P'],
+  ['N07','Vaccination','Autogenous vaccine from farm-specific isolates','P'],
+  ['M13','Therapies','Oral Florfenicol (FFC) therapy','R'],
+  ['M14','Therapies','Oral Oxytetracycline (OTC) therapy','R'],
+  ['M15','Therapies','OTC injectable therapy','R'],
+  ['M16','Therapies','OTC injectable + oral FFC combination therapy','R'],
+  ['N08','Therapies','Antibiotic stewardship programme (ASP) at farm level','R'],
+  ['N09','Therapies','Phage therapy as adjunct to antimicrobial treatment','R'],
+  ['M17','Diagnostics','PCR monitoring on suspicious SRS symptoms','D'],
+  ['M18','Diagnostics','Regular PCR monitoring (with or without SRS signs)','D'],
+  ['M19','Diagnostics','Genogroup classification (PCR)','D'],
+  ['M20','Diagnostics','Genovariant classification (PCR)','D'],
+  ['M21','Diagnostics','MIC determination per outbreak','D'],
+  ['N10','Diagnostics','LAMP-based point-of-care rapid diagnostics in the field','D'],
+  ['N11','Diagnostics','Environmental DNA (eDNA) monitoring for P. salmonis','D'],
+  ['N12','Diagnostics','AI-assisted lesion scoring at necropsy','D'],
+  ['N13','Diagnostics','Sentinel fish deployment for early outbreak detection','D'],
+  ['M22','Neighbourhood Coordination','Regular neighbourhood meetings','P'],
+  ['N14','Neighbourhood Coordination','Coordinated treatment windows across neighbouring farms','R'],
+  ['N15','Neighbourhood Coordination','Shared real-time disease data platform between neighbours','D'],
+  ['M23','Predator Control','Nets to protect cages from birds','P'],
+  ['M24','Predator Control','Netting systems to prevent sea lions','P'],
+  ['M25','Functional Foods','Permanent functional foods in on-growing','P'],
+  ['M26','Functional Foods','Functional foods timed to risk period','P'],
+  ['M27','Functional Foods','Company-defined feed additives','P'],
+  ['M28','Fallowing','Neighbourhood rest (fallowing period)','P'],
+  ['M29','Culture Densities','Use regulatory maximum stocking densities','P'],
+  ['M30','Culture Densities','Use densities below regulatory maximum','P'],
+  ['M31','Culture Densities','Stocking at final density','P'],
+  ['M32','Culture Densities','Stocking smolts then splitting','P'],
+  ['M33','Concomitant Diseases','Effective Caligus control to prevent SRS outbreaks','P'],
+  ['M34','Concomitant Diseases','Absence of Tenacibaculum co-infections','P'],
+  ['M35','Concomitant Diseases','Control and/or absence of Ulcerative Vibriosis','P'],
+  ['M36','Concomitant Diseases','Effective AGD control','P'],
+  ['M37','Concomitant Diseases','Effective PGD control','P'],
+  ['M38','Concomitant Diseases','Algal bloom mitigation measures','P'],
+  ['M39','Concomitant Diseases','Absence of jellyfish at farm','A'],
+  ['M40','Concomitant Diseases','Absence of HSMI','P'],
+  ['M41','Concomitant Diseases','Low prevalence of PRV','P'],
+  ['M42','Concomitant Diseases','Absence of Icteric Syndrome (coho)','P'],
+  ['M43','Concomitant Diseases','Absence of BKD','P'],
+  ['N16','Concomitant Diseases','Integrated sea lice + SRS risk model to time interventions','A'],
+  ['N17','Concomitant Diseases','Systematic co-infection screening (SRS + Caligus + AGD)','D'],
+  ['M44','Smolt Quality','Effective smolt quality programme','P'],
+  ['M45','Smolt Quality','Absence of non-adapted fish','P'],
+  ['M46','Smolt Quality','Comply with summer photoperiod schedules','P'],
+  ['M47','Smolt Quality','Achieve highest Smolt Index scores','P'],
+  ['M48','Smolt Quality','Low mortality during freshwater cycle','D'],
+  ['N18','Smolt Quality','Standardised smolt health scoring tool before sea transfer','P'],
+  ['N19','Smolt Quality','Pre-transfer SRS vaccination protocol optimisation','P'],
+  ['M49','Smolt Origin','Smolt from open-flow hatcheries','A'],
+  ['M50','Smolt Origin','Smolt from RAS hatcheries','A'],
+  ['M51','Genetic Resistance','Smolt from SRS-resistance breeding programme','A'],
+  ['N20','Genetic Resistance','Genomic selection for SRS resistance in breeding lines','A'],
+  ['N21','Genetic Resistance','Triploid fish evaluation for reduced SRS susceptibility','A'],
+  ['M52','Nets','Net in situ cleaning','P'],
+  ['M53','Nets','Net replacements','P'],
+  ['M54','Nets','Maintain net cleanliness at all times','P'],
+  ['M55','Cultivation Sites','Use high-energy sites','A'],
+  ['M56','Cultivation Sites','Avoid low-energy growing areas','A'],
+  ['N22','Environmental Management','Hydrodynamic risk modelling to guide site selection','A'],
+  ['N23','Environmental Management','Seasonal production scheduling to avoid peak SRS windows','A'],
+  ['N24','Environmental Management','Temperature monitoring and alert systems per cage','D'],
+  ['N25','Environmental Management','Salinity monitoring linked to risk thresholds','D'],
+  ['M57','Oxygen Management','Automatic oxygen control and supply systems','P'],
+  ['M58','Oxygen Management','Oxygen measurement system per cage','D'],
+  ['M59','Animal Welfare','Absence of cataracts reduces SRS risk','P'],
+  ['M60','Animal Welfare','Absence of damaged fins reduces SRS risk','P'],
+  ['M61','Animal Welfare','Absence of skin lesions reduces SRS risk','P'],
+  ['M62','Animal Welfare','Absence of gill disorders','P'],
+  ['N29','Animal Welfare','Minimise crowding and handling stress during SRS risk periods','P'],
+  ['N30','Animal Welfare','Welfare scoring integrated into SRS management protocols','P'],
+  ['M63','Smolt Weight','Sea entry of large smolts (>400 g)','P'],
+  ['M64','Smolt Weight','Sea entry of typical-weight smolts (100–200 g)','P'],
+  ['M65','Production Cycle','Shorter production cycles at sea','A'],
+  ['M66','Production Cycle','Use photoperiod management','P'],
+  ['M67','Production Cycle','Use fast-growing strains','A'],
+  ['N26','Technology & Innovation','Closed/semi-closed containment systems (RAS-at-sea)','A'],
+  ['N27','Technology & Innovation','Underwater cameras for real-time fish behaviour monitoring','D'],
+  ['N28','Technology & Innovation','Predictive mortality modelling (AI/ML early warning)','A'],
+  ['N31','Policy & Governance','Industry-wide SRS performance benchmarking and reporting','A'],
+  ['N32','Policy & Governance','Cross-sector knowledge platform for SRS evidence sharing','A'],
+  ['N33','Policy & Governance','Structured post-outbreak review and lessons-learned protocol','R'],
+];
+
+const APDR_LABELS = {A:'ANTICIPATE', P:'PREVENT', D:'DETECT', R:'RESPOND'};
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let TOKEN = '';
+let votes = {};       // {code: 'keep'|'remove'}
+let comments = {};    // {code: string}
+let openComments = {};// {code: bool}
+let activeFilter = null;
+let background = {};
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  TOKEN = (params.get('token') || '').trim();
+
+  if (!TOKEN || !VALID_TOKENS[TOKEN]) {
+    showPage('invalid');
+    return;
+  }
+
+  document.getElementById('tb-token').textContent = TOKEN;
+
+  // Restore saved progress
+  const saved = localStorage.getItem('ballot_' + TOKEN);
+  if (saved) {
+    try {
+      const d = JSON.parse(saved);
+      votes    = d.votes    || {};
+      comments = d.comments || {};
+      background = d.background || {};
+      // Pre-fill background form
+      if (background.orgtype) document.getElementById('q-orgtype').value = background.orgtype;
+      if (background.years)   document.getElementById('q-years').value   = background.years;
+      if (background.consent) document.getElementById('q-consent').checked = background.consent;
+    } catch(e) {}
+  }
+
+  // Populate section filter
+  const sections = [...new Set(MEASURES.map(m => m[1]))];
+  const sel = document.getElementById('filter-section');
+  sections.forEach(s => {
+    const o = document.createElement('option');
+    o.value = s; o.textContent = s;
+    sel.appendChild(o);
+  });
+
+  showPage('welcome');
+});
+
+// ─── PAGE ROUTING ─────────────────────────────────────────────────────────────
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+}
+
+// ─── START BALLOT ─────────────────────────────────────────────────────────────
+function startBallot() {
+  const orgtype = document.getElementById('q-orgtype').value;
+  const years   = document.getElementById('q-years').value;
+  const consent = document.getElementById('q-consent').checked;
+  const err = document.getElementById('welcome-err');
+
+  if (!orgtype || !years || !consent) {
+    err.style.display = 'block';
+    return;
+  }
+  err.style.display = 'none';
+  background = { orgtype, years, consent };
+  autosave();
+  showPage('ballot');
+  renderBallot();
+  updateStats();
+}
+
+// ─── RENDER BALLOT ────────────────────────────────────────────────────────────
+function renderBallot() {
+  const q      = document.getElementById('search-box').value.toLowerCase();
+  const secF   = document.getElementById('filter-section').value;
+  const apdrF  = document.getElementById('filter-apdr').value;
+
+  let filtered = MEASURES.filter(([code, sec, text, apdr]) => {
+    if (q && !text.toLowerCase().includes(q) && !code.toLowerCase().includes(q)) return false;
+    if (secF && sec !== secF) return false;
+    if (apdrF && apdr !== apdrF) return false;
+    if (activeFilter === 'unvoted'  && votes[code])            return false;
+    if (activeFilter === 'kept'    && votes[code] !== 'keep')  return false;
+    if (activeFilter === 'removed' && votes[code] !== 'remove') return false;
+    return true;
+  });
+
+  const sections = [...new Set(filtered.map(m => m[1]))];
+  const body = document.getElementById('ballot-body');
+
+  if (!filtered.length) {
+    body.innerHTML = '<div class="empty-state">No measures match your filters.</div>';
+    return;
+  }
+
+  let html = '';
+  sections.forEach(sec => {
+    const items = filtered.filter(m => m[1] === sec);
+    const votedInSec = items.filter(m => votes[m[0]]).length;
+    html += `
+      <div class="section-block" data-section="${sec}">
+        <div class="section-heading">
+          <h2>${sec}</h2>
+          <span class="section-count">${votedInSec}/${items.length} voted</span>
+        </div>`;
+    items.forEach(([code, , text, apdr]) => {
+      const v = votes[code];
+      const c = comments[code] || '';
+      const isOpen = openComments[code] || false;
+      const rowClass = v === 'keep' ? 'voted-keep' : v === 'remove' ? 'voted-remove' : '';
+      const hasC = c.trim().length > 0;
+      html += `
+        <div class="measure-row ${rowClass}" id="row-${code}">
+          <div class="mr-top">
+            <span class="mr-code">${code}</span>
+            <span class="mr-text">${text}</span>
+            <div class="mr-tags">
+              <span class="apdr-tag apdr-${apdr}">${APDR_LABELS[apdr].substring(0,3)}</span>
+            </div>
+          </div>
+          <div class="mr-actions">
+            <button class="vote-btn keep ${v==='keep'?'active':''}" onclick="castVote('${code}','keep')">✓ Keep</button>
+            <button class="vote-btn remove ${v==='remove'?'active':''}" onclick="castVote('${code}','remove')">✗ Remove</button>
+            <button class="comment-toggle ${hasC?'has-comment':''}" onclick="toggleComment('${code}')"
+              id="ct-${code}">${hasC ? '💬 Comment added' : '+ Comment'}</button>
+          </div>
+          <div class="comment-area ${isOpen?'open':''}" id="ca-${code}">
+            <textarea
+              maxlength="200"
+              placeholder="Optional — briefly explain your decision (max 200 characters)"
+              oninput="updateComment('${code}',this.value)"
+              id="ta-${code}">${c}</textarea>
+            <div class="char-count ${c.length>180?'over':''}" id="cc-${code}">${c.length}/200</div>
+          </div>
+        </div>`;
+    });
+    html += '</div>';
+  });
+
+  body.innerHTML = html;
+}
+
+// ─── VOTING ───────────────────────────────────────────────────────────────────
+function castVote(code, v) {
+  if (votes[code] === v) {
+    delete votes[code]; // toggle off
+  } else {
+    votes[code] = v;
+  }
+  autosave();
+  updateStats();
+  // Update just this row's classes and button states without full re-render
+  const row = document.getElementById('row-' + code);
+  if (!row) { renderBallot(); return; }
+  row.className = 'measure-row' + (votes[code]==='keep' ? ' voted-keep' : votes[code]==='remove' ? ' voted-remove' : '');
+  row.querySelectorAll('.vote-btn').forEach(btn => {
+    btn.classList.toggle('active',
+      (btn.classList.contains('keep') && votes[code]==='keep') ||
+      (btn.classList.contains('remove') && votes[code]==='remove')
+    );
+  });
+  // Refresh section count
+  const secBlock = row.closest('.section-block');
+  if (secBlock) {
+    const sec = secBlock.dataset.section;
+    const items = MEASURES.filter(m => m[1]===sec);
+    const visible = secBlock.querySelectorAll('.measure-row').length;
+    const votedVis = [...secBlock.querySelectorAll('.measure-row')].filter(r => {
+      const c = r.id.replace('row-','');
+      return votes[c];
+    }).length;
+    const sc = secBlock.querySelector('.section-count');
+    if (sc) sc.textContent = `${votedVis}/${visible} voted`;
+  }
+  // If a filter is active, remove row if it no longer matches
+  if (activeFilter) {
+    const shouldShow =
+      (activeFilter==='unvoted' && !votes[code]) ||
+      (activeFilter==='kept' && votes[code]==='keep') ||
+      (activeFilter==='removed' && votes[code]==='remove');
+    if (!shouldShow) {
+      row.style.display = 'none';
+    }
+  }
+}
+
+function toggleComment(code) {
+  openComments[code] = !openComments[code];
+  const ca = document.getElementById('ca-' + code);
+  if (ca) ca.classList.toggle('open', openComments[code]);
+}
+
+function updateComment(code, val) {
+  comments[code] = val;
+  const cc = document.getElementById('cc-' + code);
+  if (cc) {
+    cc.textContent = val.length + '/200';
+    cc.className = 'char-count' + (val.length > 180 ? ' over' : '');
+  }
+  const ct = document.getElementById('ct-' + code);
+  if (ct) {
+    const hasC = val.trim().length > 0;
+    ct.textContent = hasC ? '💬 Comment added' : '+ Comment';
+    ct.className = 'comment-toggle' + (hasC ? ' has-comment' : '');
+  }
+  autosave();
+}
+
+// ─── FILTERS ─────────────────────────────────────────────────────────────────
+function togglePill(f) {
+  activeFilter = activeFilter === f ? null : f;
+  ['unvoted','kept','removed'].forEach(id => {
+    document.getElementById('pill-' + id).classList.toggle('on', activeFilter === id);
+  });
+  renderBallot();
+}
+
+// ─── STATS ────────────────────────────────────────────────────────────────────
+function updateStats() {
+  const kept    = Object.values(votes).filter(v => v==='keep').length;
+  const removed = Object.values(votes).filter(v => v==='remove').length;
+  const total   = MEASURES.length;
+  const unvoted = total - kept - removed;
+  const pct     = Math.round((kept+removed)/total*100);
+
+  document.getElementById('vs-keep').textContent    = '✓ ' + kept;
+  document.getElementById('vs-remove').textContent  = '✗ ' + removed;
+  document.getElementById('vs-unvoted').textContent = '○ ' + unvoted + ' left';
+  document.getElementById('sb-keep').textContent    = kept + ' kept';
+  document.getElementById('sb-remove').textContent  = removed + ' removed';
+  document.getElementById('sb-left').textContent    = unvoted + ' unvoted';
+  document.getElementById('prog-fill').style.width  = pct + '%';
+  document.getElementById('prog-label').textContent = (kept+removed) + ' / ' + total;
+
+  const btn = document.getElementById('btn-submit');
+  btn.disabled = unvoted > 0;
+  btn.textContent = unvoted > 0 ? `${unvoted} measure${unvoted>1?'s':''} remaining` : 'Submit ballot →';
+}
+
+// ─── AUTOSAVE ─────────────────────────────────────────────────────────────────
+let saveTimer;
+function autosave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    localStorage.setItem('ballot_' + TOKEN, JSON.stringify({ votes, comments, background }));
+    const note = document.getElementById('autosave-note');
+    if (note) {
+      note.textContent = 'Progress saved ✓';
+      note.className = 'autosave-note saved';
+      setTimeout(() => {
+        note.textContent = 'Progress auto-saved';
+        note.className = 'autosave-note';
+      }, 2000);
+    }
+  }, 800);
+}
+
+// ─── SUBMIT ───────────────────────────────────────────────────────────────────
+function confirmSubmit() {
+  const kept    = Object.values(votes).filter(v=>v==='keep').length;
+  const removed = Object.values(votes).filter(v=>v==='remove').length;
+
+  if (kept + removed < MEASURES.length) {
+    alert('Please vote on all ' + MEASURES.length + ' measures before submitting.');
+    return;
+  }
+
+  if (!confirm(`You are about to submit your ballot.\n\n✓ Kept: ${kept}\n✗ Removed: ${removed}\n\nThis cannot be undone. Proceed?`)) return;
+
+  submitBallot();
+}
+
+async function submitBallot() {
+  document.getElementById('overlay').classList.add('active');
+
+  const payload = {
+    token:      TOKEN,
+    timestamp:  new Date().toISOString(),
+    orgtype:    background.orgtype,
+    years:      background.years,
+    votes:      votes,
+    comments:   comments,
+  };
+
+  try {
+    // Google Apps Script requires a no-cors POST or a redirect-following fetch
+    // We use no-cors because GAS redirects; we infer success from no network error
+    await fetch(SHEET_ENDPOINT, {
+      method:  'POST',
+      mode:    'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(payload),
+    });
+    // With no-cors we can't read the response — treat completion as success
+    onSubmitSuccess();
+  } catch (err) {
+    document.getElementById('overlay').classList.remove('active');
+    alert('Submission failed — please check your internet connection and try again.\n\nIf the problem persists, contact fmardone@ed.ac.uk with your token (' + TOKEN + ').');
+  }
+}
+
+function onSubmitSuccess() {
+  // Clear localStorage
+  localStorage.removeItem('ballot_' + TOKEN);
+
+  // Build summary
+  const kept    = Object.values(votes).filter(v=>v==='keep').length;
+  const removed = Object.values(votes).filter(v=>v==='remove').length;
+  const withComment = Object.values(comments).filter(c=>c.trim().length>0).length;
+
+  const apdrKept = {A:0,P:0,D:0,R:0};
+  MEASURES.filter(m=>votes[m[0]]==='keep').forEach(m=>apdrKept[m[3]]++);
+
+  document.getElementById('ty-summary').innerHTML = `
+    <div class="ty-row"><span>Measures kept</span><span class="ty-val green">${kept}</span></div>
+    <div class="ty-row"><span>Measures removed</span><span class="ty-val red">${removed}</span></div>
+    <div class="ty-row"><span>Comments added</span><span class="ty-val">${withComment}</span></div>
+    <div class="ty-row"><span>ANTICIPATE kept</span><span class="ty-val">${apdrKept.A}</span></div>
+    <div class="ty-row"><span>PREVENT kept</span><span class="ty-val">${apdrKept.P}</span></div>
+    <div class="ty-row"><span>DETECT kept</span><span class="ty-val">${apdrKept.D}</span></div>
+    <div class="ty-row"><span>RESPOND kept</span><span class="ty-val">${apdrKept.R}</span></div>
+    <div class="ty-row"><span>Token</span><span class="ty-val">${TOKEN}</span></div>
+  `;
+
+  document.getElementById('overlay').classList.remove('active');
+  showPage('thankyou');
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
