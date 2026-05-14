@@ -178,6 +178,41 @@ footer{background:var(--navy2);color:rgba(255,255,255,0.6);padding:3rem 2rem;bor
 .hero-inner>*:nth-child(3){animation-delay:0.25s}
 .hero-inner>*:nth-child(4){animation-delay:0.35s}
 .hero-inner>*:nth-child(5){animation-delay:0.45s}
+
+/* ── PARTICIPATION SECTION ── */
+#participation{background:var(--offwhite);border-top:1px solid var(--border)}
+.participation-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:3rem}
+.doc-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:2rem;display:flex;flex-direction:column;gap:1rem}
+.doc-card-header{display:flex;align-items:flex-start;gap:1rem}
+.doc-icon{width:48px;height:48px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.doc-icon-blue{background:var(--paler)}
+.doc-icon-gold{background:#FDF3E3}
+.doc-card h3{font-family:'Source Serif 4',serif;font-size:1.1rem;font-weight:600;color:var(--navy);margin-bottom:4px}
+.doc-card .doc-version{font-size:11.5px;color:var(--muted);font-weight:500;letter-spacing:0.04em;text-transform:uppercase}
+.doc-card p{font-size:14px;color:var(--muted);line-height:1.75}
+.doc-checklist{list-style:none;margin-top:0.5rem}
+.doc-checklist li{font-size:13.5px;color:var(--muted);padding:5px 0;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:8px;line-height:1.5}
+.doc-checklist li:last-child{border-bottom:none}
+.doc-checklist li::before{content:"☐";flex-shrink:0;color:var(--navy);font-size:14px;margin-top:1px}
+.doc-contact{font-size:13px;color:var(--muted);margin-top:0.5rem;padding-top:0.75rem;border-top:1px solid var(--border)}
+.doc-contact strong{color:var(--text)}
+.consent-fields{margin-top:0.5rem}
+.consent-field{display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--border);font-size:13.5px;color:var(--muted);line-height:1.5}
+.consent-field:last-child{border-bottom:none}
+.consent-field::before{content:"☐";flex-shrink:0;color:var(--navy);font-size:14px;margin-top:1px}
+.consent-sig{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:1rem}
+.sig-field{border-bottom:1px solid var(--border);padding:6px 0;font-size:12.5px;color:var(--muted)}
+.sig-label{font-size:11px;font-weight:600;color:var(--navy);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:2px}
+.sig-line{height:24px;border-bottom:1px solid var(--border)}
+@media(max-width:700px){.participation-grid{grid-template-columns:1fr}.consent-sig{grid-template-columns:1fr}}
+
+/* ── ENHANCED TEAM CARDS ── */
+.team-photo{width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--pale);background:var(--paler);display:flex;align-items:center;justify-content:center;margin-bottom:0.9rem;overflow:hidden}
+.team-photo img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.team-photo-placeholder{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--navy2),var(--royal));display:flex;align-items:center;justify-content:center;font-family:'Source Serif 4',serif;font-size:1.3rem;font-weight:600;color:var(--white);margin-bottom:0.9rem;letter-spacing:0.02em}
+.team-link{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--sky);text-decoration:none;margin-top:6px;font-weight:500}
+.team-link:hover{color:var(--royal);text-decoration:underline}
+
 </style>
 </head>
 <body>
@@ -191,6 +226,7 @@ footer{background:var(--navy2);color:rgba(255,255,255,0.6);padding:3rem 2rem;bor
       <li><a href="#phases">Study Phases</a></li>
       <li><a href="#team">Team</a></li>
       <li><a href="#literature">Literature</a></li>
+      <li><a href="#participation">Participation</a></li>
       <li><a href="#ballot">Expert Ballot</a></li>
     </ul>
   </div>
@@ -284,47 +320,64 @@ footer{background:var(--navy2);color:rgba(255,255,255,0.6);padding:3rem 2rem;bor
     <p class="section-label">The team</p>
     <h2 class="section-title">Researchers and co-investigators</h2>
     <p class="section-lead">The project is led from the Division of Global Agriculture and Food Systems at R(D)SVS, University of Edinburgh, with collaborators across veterinary pathology, epidemiology, and diagnostics.</p>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:0.5rem">To add a photo: upload a square image named <code>fm.jpg</code>, <code>jdp.jpg</code>, <code>ka.jpg</code>, <code>dp.jpg</code> to your GitHub repository, then the placeholders will show the real photos automatically.</p>
     <div class="team-grid">
       <div class="team-card">
-        <div class="avatar av-gold">FM</div>
+        <div class="team-photo-placeholder" id="photo-fm">
+          <img src="fm.jpg" alt="Fernando O. Mardones" onerror="this.parentElement.innerHTML='FM'" style="width:100%;height:100%;object-fit:cover;border-radius:50%">
+        </div>
         <div class="team-name">Fernando O. Mardones</div>
         <div class="team-role">Principal Investigator</div>
-        <div class="team-affil">Division of Global Agriculture and Food Systems, R(D)SVS, University of Edinburgh</div>
+        <div class="team-affil">Senior Lecturer in One Health &amp; Aquaculture<br>Division of Global Agriculture and Food Systems, R(D)SVS, University of Edinburgh</div>
         <div class="team-contrib">Study design, methodology, analysis, AquaEPIC lead</div>
+        <a href="https://edwebprofiles.ed.ac.uk/profile/fomardones" target="_blank" class="team-link">↗ University profile</a>
+        <a href="mailto:fmardone@ed.ac.uk" class="team-link" style="margin-top:2px">✉ fmardone@ed.ac.uk</a>
       </div>
       <div class="team-card">
-        <div class="avatar av-mid">JdP</div>
+        <div class="team-photo-placeholder" id="photo-jdp">
+          <img src="jdp.jpg" alt="Jorge del Pozo" onerror="this.parentElement.innerHTML='JdP'" style="width:100%;height:100%;object-fit:cover;border-radius:50%">
+        </div>
         <div class="team-name">Jorge del Pozo</div>
         <div class="team-role">Co-investigator</div>
-        <div class="team-affil">Veterinary Pathology & Aquatic Diagnostics, R(D)SVS, University of Edinburgh</div>
+        <div class="team-affil">Personal Chair in Veterinary Anatomic Pathology<br>Veterinary Pathology &amp; Aquatic Diagnostics, R(D)SVS, University of Edinburgh</div>
         <div class="team-contrib">Pathology expertise, diagnostic input</div>
+        <a href="https://edwebprofiles.ed.ac.uk/profile/dr-jorge-del-pozo" target="_blank" class="team-link">↗ University profile</a>
+        <a href="mailto:Jorge.Del.Pozo@ed.ac.uk" class="team-link" style="margin-top:2px">✉ Jorge.Del.Pozo@ed.ac.uk</a>
       </div>
       <div class="team-card">
-        <div class="avatar av-sky">KA</div>
+        <div class="team-photo-placeholder" id="photo-ka">
+          <img src="ka.jpg" alt="Katie Adams" onerror="this.parentElement.innerHTML='KA'" style="width:100%;height:100%;object-fit:cover;border-radius:50%">
+        </div>
         <div class="team-name">Katie Adams</div>
         <div class="team-role">Co-investigator</div>
-        <div class="team-affil">Division of Global Agriculture and Food Systems, R(D)SVS, University of Edinburgh</div>
+        <div class="team-affil">Lecturer, EPIC Scotland<br>Division of Global Agriculture and Food Systems, R(D)SVS, University of Edinburgh</div>
         <div class="team-contrib">Epidemiology, data analysis</div>
+        <a href="https://www.epicscotland.org/people/dr-katie-adam/" target="_blank" class="team-link">↗ EPIC Scotland profile</a>
+        <a href="mailto:kadam3@exseed.ed.ac.uk" class="team-link" style="margin-top:2px">✉ kadam3@exseed.ed.ac.uk</a>
       </div>
       <div class="team-card">
-        <div class="avatar av-sky">DP</div>
+        <div class="team-photo-placeholder" id="photo-dp">
+          <img src="dp.jpg" alt="Davide Pagnossin" onerror="this.parentElement.innerHTML='DP'" style="width:100%;height:100%;object-fit:cover;border-radius:50%">
+        </div>
         <div class="team-name">Davide Pagnossin</div>
         <div class="team-role">EPIC Research Fellow</div>
-        <div class="team-affil">R(D)SVS, University of Edinburgh</div>
+        <div class="team-affil">EPIC Scotland<br>Division of Global Agriculture and Food Systems, R(D)SVS, University of Edinburgh</div>
         <div class="team-contrib">Elicitation methodology, EPIC Scotland interface</div>
+        <a href="https://www.epicscotland.org/people/dr-davide-pagnossin/" target="_blank" class="team-link">↗ EPIC Scotland profile</a>
+        <a href="mailto:dpagnoss@ed.ac.uk" class="team-link" style="margin-top:2px">✉ dpagnoss@ed.ac.uk</a>
       </div>
       <div class="team-card">
-        <div class="avatar av-ind">IR</div>
-        <div class="team-name">Industry Rep 1</div>
-        <div class="team-role">Co-designer (Phase 1)</div>
-        <div class="team-affil">Scottish salmon farming company — to be confirmed</div>
+        <div class="team-photo-placeholder" style="background:linear-gradient(135deg,var(--green),#2E8B57)">IR</div>
+        <div class="team-name">Industry Representative 1</div>
+        <div class="team-role">Co-designer — Phase 1</div>
+        <div class="team-affil">Scottish salmon farming company<br><em style="font-size:12px">To be confirmed</em></div>
         <div class="team-contrib">Measure review, list expansion, survey piloting</div>
       </div>
       <div class="team-card">
-        <div class="avatar av-ind">IR</div>
-        <div class="team-name">Industry Rep 2</div>
-        <div class="team-role">Co-designer (Phase 1)</div>
-        <div class="team-affil">Scottish salmon farming company — to be confirmed</div>
+        <div class="team-photo-placeholder" style="background:linear-gradient(135deg,var(--green),#2E8B57)">IR</div>
+        <div class="team-name">Industry Representative 2</div>
+        <div class="team-role">Co-designer — Phase 1</div>
+        <div class="team-affil">Scottish salmon farming company<br><em style="font-size:12px">To be confirmed</em></div>
         <div class="team-contrib">Measure review, list expansion, survey piloting</div>
       </div>
     </div>
@@ -390,6 +443,91 @@ footer{background:var(--navy2);color:rgba(255,255,255,0.6);padding:3rem 2rem;bor
   </div>
 </section>
 
+
+<!-- PARTICIPATION -->
+<section id="participation">
+  <div class="container">
+    <p class="section-label">Study documentation</p>
+    <h2 class="section-title">Participation information &amp; consent</h2>
+    <p class="section-lead">Before taking part in the study, please read the Participant Information Sheet and complete the Consent Form. Both documents are reproduced in full below. Printed copies are available on request from the study team.</p>
+    <div class="participation-grid">
+
+      <!-- INFORMATION SHEET -->
+      <div class="doc-card">
+        <div class="doc-card-header">
+          <div class="doc-icon doc-icon-blue">📋</div>
+          <div>
+            <h3>Participant Information Sheet</h3>
+            <span class="doc-version">Version 1 · May 2026</span>
+          </div>
+        </div>
+        <p><strong>Study title:</strong> Expert elicitation to prioritise risk and protective factors for bacterial diseases in Scottish salmon aquaculture.</p>
+        <p><strong>What is the purpose of the study?</strong> This study aims to identify and prioritise key risk and protective factors influencing bacterial disease occurrence, timing, and severity in Scottish salmon aquaculture, using a structured expert elicitation (Delphi) approach.</p>
+        <p><strong>Why have I been invited?</strong> You have been invited because of your professional expertise in fish health, aquaculture, or related fields. Your experience is valuable in helping to identify and prioritise factors influencing disease dynamics.</p>
+        <p><strong>What will participation involve?</strong></p>
+        <ul class="doc-checklist">
+          <li>Completing an online screening ballot and Delphi questionnaire (Round 1) — approximately 20–30 minutes</li>
+          <li>Taking part in a structured discussion (online or in person)</li>
+          <li>Completing a second questionnaire (Round 2) — approximately 20–30 minutes</li>
+          <li>Optional attendance at a final workshop at the University of Edinburgh to review and discuss aggregated results</li>
+        </ul>
+        <p><strong>Will my participation be confidential?</strong> Yes. All responses will be anonymised prior to analysis and reporting. However, please note that during group discussions and the optional workshop, participants may be known to each other. While anonymity cannot be guaranteed in these settings, no individual responses will be attributed in any outputs.</p>
+        <p><strong>Will the study be recorded?</strong> No. No audio or video recordings will be made. Notes may be taken in anonymised form.</p>
+        <p><strong>Do I have to take part?</strong> No. Participation is entirely voluntary. You are free to withdraw at any time without giving a reason and without any consequences.</p>
+        <p><strong>What will happen to my data?</strong></p>
+        <ul class="doc-checklist">
+          <li>Limited personal data (name and email address) will be collected for communication purposes only</li>
+          <li>Research data will be anonymised and analysed in aggregate form</li>
+          <li>Data will be stored securely on University of Edinburgh systems</li>
+          <li>Data will be retained for up to 5 years and then securely deleted</li>
+          <li>Fully anonymised results may be used in academic publications and reports</li>
+        </ul>
+        <p><strong>What are the risks?</strong> This study is considered low risk. The main consideration is that, during group discussions, participants may be identifiable to each other. This will be managed by ensuring that no individual responses are reported.</p>
+        <p><strong>Will I receive the results?</strong> Yes. A summary of the findings will be shared with participants via email upon completion of the study.</p>
+        <div class="doc-contact">
+          <strong>Research team contacts:</strong><br>
+          Fernando O. Mardones — <a href="mailto:fmardone@ed.ac.uk">fmardone@ed.ac.uk</a><br>
+          Jorge del Pozo — <a href="mailto:Jorge.Del.Pozo@ed.ac.uk">Jorge.Del.Pozo@ed.ac.uk</a><br>
+          Katie Adams — <a href="mailto:kadam3@exseed.ed.ac.uk">kadam3@exseed.ed.ac.uk</a><br>
+          Davide Pagnossin — <a href="mailto:dpagnoss@ed.ac.uk">dpagnoss@ed.ac.uk</a>
+        </div>
+      </div>
+
+      <!-- CONSENT FORM -->
+      <div class="doc-card">
+        <div class="doc-card-header">
+          <div class="doc-icon doc-icon-gold">✍️</div>
+          <div>
+            <h3>Participant Consent Form</h3>
+            <span class="doc-version">Version 1 · May 2026</span>
+          </div>
+        </div>
+        <p><strong>Study title:</strong> Expert elicitation to prioritise risk and protective factors for bacterial diseases in Scottish salmon aquaculture.</p>
+        <p style="font-size:13px;color:var(--muted)">Please tick each box to confirm your understanding and agreement before proceeding to the ballot:</p>
+        <div class="consent-fields">
+          <div class="consent-field">I confirm that I have read and understood the Participant Information Sheet</div>
+          <div class="consent-field">I have had the opportunity to ask questions and received satisfactory answers</div>
+          <div class="consent-field">I understand that my participation is voluntary and that I am free to withdraw at any time without consequence</div>
+          <div class="consent-field">I understand that my responses will be anonymised and used for research purposes, including publications and reports</div>
+          <div class="consent-field">I understand that no audio or video recordings will be made</div>
+          <div class="consent-field">I understand that while my responses will be anonymised, participation in group discussions or workshops may not be anonymous to other participants</div>
+          <div class="consent-field">I understand that my data will be stored securely in accordance with UK GDPR and retained for up to 5 years</div>
+          <div class="consent-field">I understand that, in rare circumstances, the researcher may be required to disclose information if there is a risk of harm, in line with legal and institutional obligations</div>
+          <div class="consent-field">I agree to take part in this study</div>
+        </div>
+        <div class="consent-sig">
+          <div class="sig-field"><div class="sig-label">Participant name</div><div class="sig-line"></div></div>
+          <div class="sig-field"><div class="sig-label">Signature</div><div class="sig-line"></div></div>
+          <div class="sig-field"><div class="sig-label">Date</div><div class="sig-line"></div></div>
+          <div class="sig-field"><div class="sig-label">Researcher</div><div class="sig-line" style="font-size:12px;color:var(--muted);padding-top:4px">Fernando O. Mardones</div></div>
+        </div>
+        <p style="font-size:12.5px;color:var(--muted);margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--border)">The online ballot includes a consent checkbox that fulfils this requirement digitally. A printed copy of this form is available on request from <a href="mailto:fmardone@ed.ac.uk">fmardone@ed.ac.uk</a>.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 <!-- BALLOT -->
 <section id="ballot">
   <div class="container">
@@ -443,6 +581,7 @@ footer{background:var(--navy2);color:rgba(255,255,255,0.6);padding:3rem 2rem;bor
       <a href="#phases">Study phases</a>
       <a href="#team">Research team</a>
       <a href="#literature">Literature</a>
+      <a href="#participation">Participation</a>
       <a href="#ballot">Expert ballot</a>
     </div>
     <div class="footer-col">
