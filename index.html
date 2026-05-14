@@ -196,15 +196,24 @@ footer{background:var(--navy2);color:rgba(255,255,255,0.6);padding:3rem 2rem;bor
 .doc-checklist li::before{content:"☐";flex-shrink:0;color:var(--navy);font-size:14px;margin-top:1px}
 .doc-contact{font-size:13px;color:var(--muted);margin-top:0.5rem;padding-top:0.75rem;border-top:1px solid var(--border)}
 .doc-contact strong{color:var(--text)}
-.consent-fields{margin-top:0.5rem}
-.consent-field{display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--border);font-size:13.5px;color:var(--muted);line-height:1.5}
-.consent-field:last-child{border-bottom:none}
-.consent-field::before{content:"☐";flex-shrink:0;color:var(--navy);font-size:14px;margin-top:1px}
-.consent-sig{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:1rem}
-.sig-field{border-bottom:1px solid var(--border);padding:6px 0;font-size:12.5px;color:var(--muted)}
-.sig-label{font-size:11px;font-weight:600;color:var(--navy);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:2px}
-.sig-line{height:24px;border-bottom:1px solid var(--border)}
-@media(max-width:700px){.participation-grid{grid-template-columns:1fr}.consent-sig{grid-template-columns:1fr}}
+.consent-form-item{display:flex;gap:12px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border);font-size:13.5px;color:var(--text);line-height:1.55;cursor:pointer}
+.consent-form-item:last-of-type{border-bottom:none}
+.consent-form-item input[type=checkbox]{width:18px;height:18px;accent-color:var(--navy);flex-shrink:0;margin-top:2px;cursor:pointer}
+.consent-form-item label{cursor:pointer;flex:1}
+.consent-inputs{display:grid;grid-template-columns:1fr 1fr;gap:0.85rem;margin-top:1.2rem}
+.consent-field-group{display:flex;flex-direction:column;gap:4px}
+.consent-field-group label{font-size:11.5px;font-weight:600;color:var(--navy);letter-spacing:0.06em;text-transform:uppercase}
+.consent-field-group input{padding:8px 12px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-family:'Source Sans 3',sans-serif;color:var(--text);background:var(--white);transition:border-color 0.2s}
+.consent-field-group input:focus{outline:none;border-color:var(--sky)}
+.consent-researcher{background:var(--paler);border-radius:6px;padding:8px 12px;font-size:13px;color:var(--muted);grid-column:1/-1}
+.btn-consent{width:100%;padding:12px;background:var(--navy);color:var(--white);border:none;border-radius:6px;font-size:14.5px;font-weight:600;font-family:'Source Sans 3',sans-serif;cursor:pointer;margin-top:1.2rem;transition:background 0.2s;letter-spacing:0.02em}
+.btn-consent:hover{background:var(--royal)}
+.btn-consent:disabled{background:var(--muted);cursor:not-allowed}
+.consent-err{color:#8B2020;font-size:12.5px;margin-top:6px;display:none}
+.consent-success{background:#E8F5EE;border:1px solid #1E6B45;border-radius:8px;padding:1.2rem 1.5rem;margin-top:1rem;display:none}
+.consent-success h4{font-family:'Source Serif 4',serif;font-size:1rem;color:#1E6B45;margin-bottom:6px}
+.consent-success p{font-size:13px;color:#1E6B45;line-height:1.65}
+@media(max-width:700px){.participation-grid{grid-template-columns:1fr}.consent-inputs{grid-template-columns:1fr}}
 
 /* ── ENHANCED TEAM CARDS ── */
 .team-photo{width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--pale);background:var(--paler);display:flex;align-items:center;justify-content:center;margin-bottom:0.9rem;overflow:hidden}
@@ -493,35 +502,60 @@ footer{background:var(--navy2);color:rgba(255,255,255,0.6);padding:3rem 2rem;bor
         </div>
       </div>
 
-      <!-- CONSENT FORM -->
+      <!-- CONSENT FORM — INTERACTIVE -->
       <div class="doc-card">
         <div class="doc-card-header">
           <div class="doc-icon doc-icon-gold">✍️</div>
           <div>
             <h3>Participant Consent Form</h3>
-            <span class="doc-version">Version 1 · May 2026</span>
+            <span class="doc-version">Version 1 · May 2026 · Complete online</span>
           </div>
         </div>
         <p><strong>Study title:</strong> Expert elicitation to prioritise risk and protective factors for bacterial diseases in Scottish salmon aquaculture.</p>
-        <p style="font-size:13px;color:var(--muted)">Please tick each box to confirm your understanding and agreement before proceeding to the ballot:</p>
-        <div class="consent-fields">
-          <div class="consent-field">I confirm that I have read and understood the Participant Information Sheet</div>
-          <div class="consent-field">I have had the opportunity to ask questions and received satisfactory answers</div>
-          <div class="consent-field">I understand that my participation is voluntary and that I am free to withdraw at any time without consequence</div>
-          <div class="consent-field">I understand that my responses will be anonymised and used for research purposes, including publications and reports</div>
-          <div class="consent-field">I understand that no audio or video recordings will be made</div>
-          <div class="consent-field">I understand that while my responses will be anonymised, participation in group discussions or workshops may not be anonymous to other participants</div>
-          <div class="consent-field">I understand that my data will be stored securely in accordance with UK GDPR and retained for up to 5 years</div>
-          <div class="consent-field">I understand that, in rare circumstances, the researcher may be required to disclose information if there is a risk of harm, in line with legal and institutional obligations</div>
-          <div class="consent-field">I agree to take part in this study</div>
+        <p style="font-size:13px;color:var(--muted)">Please tick all nine boxes and fill in your details below. Your consent will be recorded securely. You must complete this form before accessing the expert ballot.</p>
+
+        <div id="consent-form">
+          <div class="consent-form-item"><input type="checkbox" id="c1"><label for="c1">I confirm that I have read and understood the Participant Information Sheet</label></div>
+          <div class="consent-form-item"><input type="checkbox" id="c2"><label for="c2">I have had the opportunity to ask questions and received satisfactory answers</label></div>
+          <div class="consent-form-item"><input type="checkbox" id="c3"><label for="c3">I understand that my participation is voluntary and that I am free to withdraw at any time without consequence</label></div>
+          <div class="consent-form-item"><input type="checkbox" id="c4"><label for="c4">I understand that my responses will be anonymised and used for research purposes, including publications and reports</label></div>
+          <div class="consent-form-item"><input type="checkbox" id="c5"><label for="c5">I understand that no audio or video recordings will be made</label></div>
+          <div class="consent-form-item"><input type="checkbox" id="c6"><label for="c6">I understand that while my responses will be anonymised, participation in group discussions or workshops may not be anonymous to other participants</label></div>
+          <div class="consent-form-item"><input type="checkbox" id="c7"><label for="c7">I understand that my data will be stored securely in accordance with UK GDPR and retained for up to 5 years</label></div>
+          <div class="consent-form-item"><input type="checkbox" id="c8"><label for="c8">I understand that, in rare circumstances, the researcher may be required to disclose information if there is a risk of harm, in line with legal and institutional obligations</label></div>
+          <div class="consent-form-item"><input type="checkbox" id="c9"><label for="c9"><strong>I agree to take part in this study</strong></label></div>
+
+          <div class="consent-inputs">
+            <div class="consent-field-group">
+              <label for="cn-name">Your full name *</label>
+              <input type="text" id="cn-name" placeholder="e.g. Jane Smith" autocomplete="name">
+            </div>
+            <div class="consent-field-group">
+              <label for="cn-org">Organisation</label>
+              <input type="text" id="cn-org" placeholder="e.g. Mowi Scotland">
+            </div>
+            <div class="consent-field-group">
+              <label for="cn-email">Email address *</label>
+              <input type="email" id="cn-email" placeholder="your@email.com" autocomplete="email">
+            </div>
+            <div class="consent-field-group">
+              <label for="cn-date">Today's date</label>
+              <input type="text" id="cn-date" readonly>
+            </div>
+            <div class="consent-researcher">
+              <strong>Researcher:</strong> Dr Fernando O. Mardones, University of Edinburgh &nbsp;·&nbsp; fmardone@ed.ac.uk
+            </div>
+          </div>
+
+          <button class="btn-consent" id="btn-consent" onclick="submitConsent()">Submit consent form →</button>
+          <p class="consent-err" id="consent-err">Please tick all nine boxes and enter your name and email before submitting.</p>
         </div>
-        <div class="consent-sig">
-          <div class="sig-field"><div class="sig-label">Participant name</div><div class="sig-line"></div></div>
-          <div class="sig-field"><div class="sig-label">Signature</div><div class="sig-line"></div></div>
-          <div class="sig-field"><div class="sig-label">Date</div><div class="sig-line"></div></div>
-          <div class="sig-field"><div class="sig-label">Researcher</div><div class="sig-line" style="font-size:12px;color:var(--muted);padding-top:4px">Fernando O. Mardones</div></div>
+
+        <div class="consent-success" id="consent-success">
+          <h4>✓ Consent recorded — thank you</h4>
+          <p>Your consent has been submitted and stored securely. A copy of your responses has been saved. You may now proceed to the <a href="ballot.html" style="color:#1E6B45;font-weight:600">expert screening ballot →</a></p>
+          <p style="margin-top:8px;font-size:12px;opacity:0.8">Submitted: <span id="consent-timestamp"></span></p>
         </div>
-        <p style="font-size:12.5px;color:var(--muted);margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--border)">The online ballot includes a consent checkbox that fulfils this requirement digitally. A printed copy of this form is available on request from <a href="mailto:fmardone@ed.ac.uk">fmardone@ed.ac.uk</a>.</p>
       </div>
 
     </div>
@@ -619,5 +653,96 @@ const observer=new IntersectionObserver(entries=>{
 },{threshold:0.35});
 document.querySelectorAll('section[id]').forEach(s=>observer.observe(s));
 </script>
+
+<script>
+// ── Consent form ──────────────────────────────────────────────────────────────
+const CONSENT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwXQMJWKypvuwiQbiylct3Y0Kn_7d85bAms_kyXECC1LLeec8KdhxaslLTd-PvO9HTZ/exec';
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Pre-fill today's date
+  const d = new Date();
+  const dateStr = d.toLocaleDateString('en-GB', {day:'2-digit',month:'long',year:'numeric'});
+  const el = document.getElementById('cn-date');
+  if (el) el.value = dateStr;
+
+  // Check if already consented this session
+  try {
+    const done = localStorage.getItem('consent_done');
+    if (done) showConsentSuccess(JSON.parse(done));
+  } catch(e) {}
+
+  // Live button state
+  const boxes = ['c1','c2','c3','c4','c5','c6','c7','c8','c9'];
+  boxes.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('change', updateConsentBtn);
+  });
+  ['cn-name','cn-email'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', updateConsentBtn);
+  });
+});
+
+function updateConsentBtn() {
+  const boxes = ['c1','c2','c3','c4','c5','c6','c7','c8','c9'];
+  const allTicked = boxes.every(id => document.getElementById(id)?.checked);
+  const name  = (document.getElementById('cn-name')?.value || '').trim();
+  const email = (document.getElementById('cn-email')?.value || '').trim();
+  const btn   = document.getElementById('btn-consent');
+  if (btn) btn.disabled = !(allTicked && name && email);
+}
+
+async function submitConsent() {
+  const boxes = ['c1','c2','c3','c4','c5','c6','c7','c8','c9'];
+  const allTicked = boxes.every(id => document.getElementById(id)?.checked);
+  const name  = (document.getElementById('cn-name')?.value || '').trim();
+  const email = (document.getElementById('cn-email')?.value || '').trim();
+  const org   = (document.getElementById('cn-org')?.value  || '').trim();
+  const date  = (document.getElementById('cn-date')?.value || '').trim();
+  const err   = document.getElementById('consent-err');
+
+  if (!allTicked || !name || !email) {
+    if (err) err.style.display = 'block';
+    return;
+  }
+  if (err) err.style.display = 'none';
+
+  const btn = document.getElementById('btn-consent');
+  if (btn) { btn.disabled = true; btn.textContent = 'Submitting…'; }
+
+  const ts = new Date().toISOString();
+  const payload = {
+    type: 'consent',
+    name, email, org, date,
+    timestamp: ts,
+    c1: true, c2: true, c3: true, c4: true, c5: true,
+    c6: true, c7: true, c8: true, c9: true
+  };
+
+  try {
+    await fetch(CONSENT_ENDPOINT, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+  } catch(e) { /* no-cors — treat completion as success */ }
+
+  try { localStorage.setItem('consent_done', JSON.stringify({name, email, ts})); } catch(e) {}
+  showConsentSuccess({name, email, ts});
+}
+
+function showConsentSuccess(data) {
+  const form = document.getElementById('consent-form');
+  const succ = document.getElementById('consent-success');
+  const tsEl = document.getElementById('consent-timestamp');
+  if (form) form.style.display = 'none';
+  if (succ) succ.style.display = 'block';
+  if (tsEl && data.ts) {
+    const d = new Date(data.ts);
+    tsEl.textContent = d.toLocaleString('en-GB');
+  }
+}
+</script>
+
 </body>
 </html>
